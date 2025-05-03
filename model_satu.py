@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 # Membaca model
-model_prediksi = pickle.load(open(r"D:\Prediksi Status Gizi\modelCB_terbaik.sav", "rb"))
+model_prediksi = pickle.load(open("modelCB_terbaik.sav", "rb"))
 
 # Judul Website
 st.title('Prediksi Status Gizi Balita')
