@@ -15,12 +15,15 @@ st.markdown("""
         .stApp {
             background: linear-gradient(to right, #e0f7fa, #ffffff);
         }
-        h1 {
-            color: #0d47a1;  /* Warna biru gelap agar judul terlihat jelas */
+        h1, h2, h3, h4, h5, h6 {
+            color: #0d47a1;  /* Ubah warna judul */
+        }
+        .stMarkdown {
+            color: #0d47a1;  /* Ubah warna teks markdown */
         }
         .stSelectbox label, .stNumberInput label {
             font-weight: bold;
-            color: #0d47a1;  /* Warna biru gelap untuk label */
+            color: #0d47a1;
         }
         .stButton button {
             background-color: #0d47a1;
