@@ -36,6 +36,10 @@ st.markdown("""
             background-color: #1565c0;
             color: #0d47a1; 
         }
+        .stSuccess {
+            color: #000000;  /* Warna teks (hitam) */
+            background-color: #d4edda;  /* Latar belakang hijau muda */
+        }
     </style>
 """, unsafe_allow_html=True)
 
