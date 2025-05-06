@@ -112,4 +112,4 @@ if st.button("Tampilkan Hasil Prediksi"):
             """, unsafe_allow_html=True)
         except Exception as e:
             st.error("Terjadi kesalahan saat memproses data. Pastikan semua input valid.")
-            st.error(f"Error detail: {s
+            st.error(f"Error detail: {str(e)}")
