@@ -36,10 +36,6 @@ st.markdown("""
             background-color: #1565c0;
             color: #0d47a1; 
         }
-        .stSuccess div {
-            background-color: #d4edda !important;  /* Latar belakang hijau muda */
-            color: #000000 !important;  /* Warna teks hitam */
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -107,7 +103,13 @@ if st.button("Tampilkan Hasil Prediksi"):
 
             hasil = model_prediksi.predict(input_data)
             gizi_diagnosis = status_gizi_map[int(hasil[0])]
-            st.success(f"Hasil Prediksi Status Gizi Balita: **{gizi_diagnosis}**")
+            
+            # Menggunakan st.markdown dengan CSS untuk mengubah warna
+            st.markdown(f"""
+                <div style="background-color: #d4edda; color: #000000; padding: 10px; border-radius: 5px;">
+                    <strong>Hasil Prediksi Status Gizi Balita:</strong> {gizi_diagnosis}
+                </div>
+            """, unsafe_allow_html=True)
         except Exception as e:
             st.error("Terjadi kesalahan saat memproses data. Pastikan semua input valid.")
-            st.error(f"Error detail: {str(e)}")
+            st.error(f"Error detail: {s
