@@ -4,9 +4,9 @@ import streamlit as st
 import pickle
 
 # Load model
-model_prediksi = pickle.load(open('models/modelCB_terbaik.sav', 'rb'))
+model_prediksi = pickle.load(open('modelCB_terbaik.sav', 'rb'))
 
-# Custom CSS untuk latar belakang dan elemen UI
+# Desain web
 st.markdown("""
     <style>
         body {
