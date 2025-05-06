@@ -13,7 +13,7 @@ st.markdown("""
             background: linear-gradient(to right, #e0f7fa, #ffffff);
         }
         h1, h2, h3, h4, h5, h6, .stMarkdown {
-            color: #0d47a1;
+            color: #0d47a1;  /* Biru Dongker Tua */
         }
         .stSelectbox label, .stTextInput label {
             font-weight: bold;
