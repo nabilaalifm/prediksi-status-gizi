@@ -6,7 +6,7 @@ import pickle
 # Load model
 model_prediksi = pickle.load(open('modelCB_terbaik.sav', 'rb'))
 
-# Desain web
+# Custom CSS untuk latar belakang dan elemen UI
 st.markdown("""
     <style>
         body {
@@ -16,11 +16,11 @@ st.markdown("""
             background: linear-gradient(to right, #e0f7fa, #ffffff);
         }
         h1 {
-            color: #0d47a1;
+            color: #0d47a1;  /* Warna biru gelap agar judul terlihat jelas */
         }
         .stSelectbox label, .stNumberInput label {
             font-weight: bold;
-            color: #0d47a1;
+            color: #0d47a1;  /* Warna biru gelap untuk label */
         }
         .stButton button {
             background-color: #0d47a1;
@@ -39,21 +39,42 @@ st.markdown("Silakan isi data berikut untuk mengetahui prediksi status gizi bali
 # Kolom input (2 kolom)
 col1, col2 = st.columns(2)
 
+import re
+
+# Fungsi validasi untuk input angka desimal seperti 97.2, 56.0, 2.3, dll.
+def validate_input(value):
+    pattern = r"^\d+(\.\d+)?$"  # Memastikan formatnya angka atau angka desimal
+    if re.match(pattern, value):
+        return True
+    else:
+        return False
+
 with col1:
     Jenis_Kelamin = st.selectbox("Pilih Jenis Kelamin", ["", "Laki-laki", "Perempuan"])
-    Usia = st.number_input("Masukkan Usia (bulan)", min_value=0, step=1, format="%d")
-    Berat_Badan_Lahir = st.number_input("Berat Badan Lahir (kg)", min_value=0.0, step=0.1, format="%.1f",
-                                        help="Contoh: 2.5, 3.0, 3.2")
-    Tinggi_Badan_Lahir = st.number_input("Tinggi Badan Lahir (cm)", min_value=0.0, step=0.1, format="%.1f",
-                                         help="Contoh: 48.0, 49.1, 50.0")
-    Berat_Badan = st.number_input("Berat Badan Saat Ini (kg)", min_value=0.0, step=0.1, format="%.1f",
-                                  help="Contoh: 8.0, 9.2, 10.5")
-    Tinggi_Badan = st.number_input("Tinggi Badan Saat Ini (cm)", min_value=0.0, step=0.1, format="%.1f",
-                                   help="Contoh: 70.0, 72.5, 75.1")
+    Usia = st.text_input("Masukkan Usia (bulan)", help="Masukkan usia dalam bulan, misalnya 6, 12, 24.")
+    if Usia and not validate_integer(Usia):
+        st.error("Harap masukkan usia yang valid dalam bulan (angka bulat).")
+    
+    Berat_Badan_Lahir = st.text_input("Berat Badan Lahir (kg)", help="Contoh: 2.5, 3.0, 3.2")
+    if Berat_Badan_Lahir and not validate_input(Berat_Badan_Lahir):
+        st.error("Harap masukkan nilai yang valid untuk Berat Badan Lahir, misalnya 2.5, 3.0, 3.2.")
+    
+    Tinggi_Badan_Lahir = st.text_input("Tinggi Badan Lahir (cm)", help="Contoh: 48.0, 49.1, 50.0")
+    if Tinggi_Badan_Lahir and not validate_input(Tinggi_Badan_Lahir):
+        st.error("Harap masukkan nilai yang valid untuk Tinggi Badan Lahir, misalnya 48.0, 49.1, 50.0.")
+
 with col2:
+    Berat_Badan = st.text_input("Berat Badan Saat Ini (kg)", help="Contoh: 8.0, 9.2, 10.5")
+    if Berat_Badan and not validate_input(Berat_Badan):
+        st.error("Harap masukkan nilai yang valid untuk Berat Badan, misalnya 8.0, 9.2, 10.5.")
+    
+    Tinggi_Badan = st.text_input("Tinggi Badan Saat Ini (cm)", help="Contoh: 70.0, 72.5, 75.1")
+    if Tinggi_Badan and not validate_input(Tinggi_Badan):
+        st.error("Harap masukkan nilai yang valid untuk Tinggi Badan, misalnya 70.0, 72.5, 75.1.")
     Status_Pemberian_ASI = st.selectbox("Status Pemberian ASI", ["", "Ya", "Tidak"])
     Status_Tinggi_Badan = st.selectbox("Kondisi Tinggi Badan Saat Ini", ["", "Sangat pendek", "Pendek", "Normal", "Tinggi"])
     Status_Berat_Badan = st.selectbox("Kondisi Berat Badan Saat Ini", ["", "Berat badan sangat kurang", "Berat badan kurang", "Berat badan normal", "Risiko berat badan lebih"])
+
 
 # Mapping
 jenis_kelamin_map = {'Laki-laki': 0, 'Perempuan': 1}
