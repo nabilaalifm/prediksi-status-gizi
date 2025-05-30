@@ -44,7 +44,7 @@ st.markdown("""
 st.title("Prediksi Status Gizi Balita Menggunakan CatBoost dan KNN")
 st.markdown("""Silakan pilih algoritma lalu isi data berikut untuk mengetahui prediksi status gizi balita.""")
 
-model_choice = st.selectbox("Pilih Model Prediksi", ["CatBoost", "KNN"])
+model_choice = st.selectbox("Pilih Algoritma", ["CatBoost", "KNN"])
 
 col1, col2 = st.columns(2)
 
