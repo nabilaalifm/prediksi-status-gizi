@@ -106,9 +106,9 @@ if st.button("Tampilkan Hasil Prediksi"):
 
             # Pilih model sesuai input user
             if model_choice == "CatBoost":
-                hasil = model_cb.predict(input_data)
+                hasil = modelCB_terbaik.predict(input_data)
             else:
-                hasil = model_knn.predict(input_data)
+                hasil = modelKNN_terbaik.predict(input_data)
 
             gizi_diagnosis = status_gizi_map[int(hasil[0])]
             
