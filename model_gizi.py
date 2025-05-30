@@ -5,6 +5,7 @@ import pickle
 
 # Load model
 model_prediksi = pickle.load(open('modelCB_terbaik.sav', 'rb'))
+model_knn = pickle.load(open('modelKNN_terbaik.sav', 'rb'))
 
 # Custom CSS untuk latar belakang dan elemen UI
 st.markdown("""
@@ -40,8 +41,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Judul dan Instruksi
-st.title("Prediksi Status Gizi Balita")
-st.markdown("""Silakan isi data berikut untuk mengetahui prediksi status gizi balita.""")
+st.title("Prediksi Status Gizi Balita Menggunakan CatBoost dan KNN")
+st.markdown("""Silakan pilih algoritma lalu isi data berikut untuk mengetahui prediksi status gizi balita.""")
+
+model_choice = st.selectbox("Pilih Model Prediksi", ["CatBoost", "KNN"])
 
 col1, col2 = st.columns(2)
 
@@ -101,7 +104,12 @@ if st.button("Tampilkan Hasil Prediksi"):
                 berat_badan_map[Status_Berat_Badan]
             ]]
 
-            hasil = model_prediksi.predict(input_data)
+            # Pilih model sesuai input user
+            if model_choice == "CatBoost":
+                hasil = model_cb.predict(input_data)
+            else:
+                hasil = model_knn.predict(input_data)
+
             gizi_diagnosis = status_gizi_map[int(hasil[0])]
             
             # Menggunakan st.markdown dengan CSS untuk mengubah warna
