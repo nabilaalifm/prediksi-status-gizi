@@ -4,7 +4,7 @@ import streamlit as st
 import pickle
 
 # Load model
-model= pickle.load(open('modelCB_terbaik.sav', 'rb'))
+model_cb = pickle.load(open('modelCB_terbaik.sav', 'rb'))
 model_knn = pickle.load(open('modelKNN_terbaik.sav', 'rb'))
 
 # Custom CSS untuk latar belakang dan elemen UI
@@ -106,9 +106,9 @@ if st.button("Tampilkan Hasil Prediksi"):
 
             # Pilih model sesuai input user
             if model_choice == "CatBoost":
-                hasil = modelCB_terbaik.predict(input_data)
+                hasil = model_cb.predict(input_data)
             else:
-                hasil = modelKNN_terbaik.predict(input_data)
+                hasil = model_knn.predict(input_data)
 
             gizi_diagnosis = status_gizi_map[int(hasil[0])]
             
