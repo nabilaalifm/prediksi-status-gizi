@@ -1,17 +1,17 @@
 import numpy as np
-import pandas as pd
 import streamlit as st
 import pickle
 
-# Load model
-model_cb = pickle.load(open('modelCB_terbaik.sav', 'rb'))
-model_knn = pickle.load(open('modelKNN_terbaik.sav', 'rb'))
+# === Fungsi load model hanya sekali pakai cache_resource ===
+@st.cache_resource
+def load_models():
+    model_cb = pickle.load(open('modelCB_terbaik.sav', 'rb'))
+    model_knn = pickle.load(open('modelKNN_terbaik.sav', 'rb'))
+    return model_cb, model_knn
 
-# Session state untuk navigasi halaman
-if "page" not in st.session_state:
-    st.session_state.page = "form"
+model_cb, model_knn = load_models()
 
-# Mapping untuk input
+# Mapping input ke angka
 jenis_kelamin_map = {'Laki-laki': 0, 'Perempuan': 1}
 asi_map = {'Tidak': 0, 'Ya': 1}
 berat_badan_map = {
@@ -35,64 +35,76 @@ status_gizi_map = {
     5: 'Obesitas'
 }
 
-# CSS Kustom
+# CSS kustom (optional)
 st.markdown("""
-    <style>
-        body {
-            background: linear-gradient(to right, #e0f7fa, #ffffff);
-        }
-        .stApp {
-            background: linear-gradient(to right, #e0f7fa, #ffffff);
-        }
-        h1 {
-            color: #0d47a1 !important;
-        }
-        h2, h3, h4, h5, h6 {
-            color: #0d47a1;
-        }
-        .stMarkdown {
-            color: #0d47a1;
-        }
-        .stSelectbox label, .stNumberInput label, .stTextInput label {
-            font-weight: bold;
-            color: #0d47a1;
-        }
-        .stButton button {
-            background-color: #0d47a1;
-            color: white;
-        }
-        .stButton button:hover {
-            background-color: #1565c0;
-            color: #0d47a1;
-        }
-    </style>
+<style>
+    body {
+        background: linear-gradient(to right, #e0f7fa, #ffffff);
+    }
+    .stApp {
+        background: linear-gradient(to right, #e0f7fa, #ffffff);
+    }
+    h1 {
+        color: #0d47a1 !important;
+    }
+    h2, h3, h4, h5, h6 {
+        color: #0d47a1;
+    }
+    .stMarkdown {
+        color: #0d47a1;
+    }
+    label {
+        font-weight: bold;
+        color: #0d47a1;
+    }
+    button {
+        background-color: #0d47a1 !important;
+        color: white !important;
+    }
+    button:hover {
+        background-color: #1565c0 !important;
+        color: #0d47a1 !important;
+    }
+</style>
 """, unsafe_allow_html=True)
 
-# ============================
-# HALAMAN FORM INPUT FITUR
-# ============================
+# Inisialisasi page session state
+if "page" not in st.session_state:
+    st.session_state.page = "form"
+
+# Fungsi reset input form
+def reset_form():
+    keys = ["Jenis_Kelamin", "Usia", "Berat_Badan_Lahir", "Tinggi_Badan_Lahir",
+            "Berat_Badan", "Tinggi_Badan", "Status_Pemberian_ASI",
+            "Status_Tinggi_Badan", "Status_Berat_Badan"]
+    for key in keys:
+        if key in st.session_state:
+            del st.session_state[key]
+
+# Halaman Form Input
 if st.session_state.page == "form":
     st.title("Prediksi Status Gizi Balita Menggunakan CatBoost dan KNN")
     st.markdown("Silakan pilih algoritma lalu isi data berikut untuk mengetahui prediksi status gizi balita.")
 
-    model_choice = st.selectbox("Pilih Algoritma", ["CatBoost", "KNN"])
+    model_choice = st.selectbox("Pilih Algoritma", ["CatBoost", "KNN"], key="model_choice")
 
     col1, col2 = st.columns(2)
 
     with col1:
-        Jenis_Kelamin = st.selectbox("Pilih Jenis Kelamin", ["", "Laki-laki", "Perempuan"])
-        Usia = st.text_input("Masukkan Usia (bulan)")
-        Berat_Badan_Lahir = st.text_input("Berat Badan Lahir (kg)")
-        Tinggi_Badan_Lahir = st.text_input("Tinggi Badan Lahir (cm)")
+        Jenis_Kelamin = st.selectbox("Pilih Jenis Kelamin", ["", "Laki-laki", "Perempuan"], key="Jenis_Kelamin")
+        Usia = st.text_input("Masukkan Usia (bulan)", key="Usia")
+        Berat_Badan_Lahir = st.text_input("Berat Badan Lahir (kg)", key="Berat_Badan_Lahir")
+        Tinggi_Badan_Lahir = st.text_input("Tinggi Badan Lahir (cm)", key="Tinggi_Badan_Lahir")
 
     with col2:
-        Berat_Badan = st.text_input("Berat Badan Saat Ini (kg)")
-        Tinggi_Badan = st.text_input("Tinggi Badan Saat Ini (cm)")
-        Status_Pemberian_ASI = st.selectbox("Status Pemberian ASI", ["", "Ya", "Tidak"])
-        Status_Tinggi_Badan = st.selectbox("Kondisi Tinggi Badan Saat Ini", ["", "Sangat pendek", "Pendek", "Normal", "Tinggi"])
-        Status_Berat_Badan = st.selectbox("Kondisi Berat Badan Saat Ini", ["", "Berat badan sangat kurang", "Berat badan kurang", "Berat badan normal", "Risiko berat badan lebih"])
+        Berat_Badan = st.text_input("Berat Badan Saat Ini (kg)", key="Berat_Badan")
+        Tinggi_Badan = st.text_input("Tinggi Badan Saat Ini (cm)", key="Tinggi_Badan")
+        Status_Pemberian_ASI = st.selectbox("Status Pemberian ASI", ["", "Ya", "Tidak"], key="Status_Pemberian_ASI")
+        Status_Tinggi_Badan = st.selectbox("Kondisi Tinggi Badan Saat Ini", ["", "Sangat pendek", "Pendek", "Normal", "Tinggi"], key="Status_Tinggi_Badan")
+        Status_Berat_Badan = st.selectbox("Kondisi Berat Badan Saat Ini", ["", "Berat badan sangat kurang", "Berat badan kurang", "Berat badan normal", "Risiko berat badan lebih"], key="Status_Berat_Badan")
 
     if st.button("Tampilkan Hasil Prediksi"):
+        # Cek input kosong
         if "" in (Jenis_Kelamin, Usia, Berat_Badan_Lahir, Tinggi_Badan_Lahir,
                   Berat_Badan, Tinggi_Badan, Status_Pemberian_ASI, Status_Tinggi_Badan, Status_Berat_Badan):
             st.warning("Mohon lengkapi semua input terlebih dahulu.")
@@ -123,9 +135,7 @@ if st.session_state.page == "form":
                 st.error("Terjadi kesalahan saat memproses data. Pastikan semua input valid.")
                 st.error(f"Detail error: {str(e)}")
 
-# ============================
-# HALAMAN HASIL PREDIKSI
-# ============================
+# Halaman hasil prediksi
 elif st.session_state.page == "hasil":
     st.title("Hasil Prediksi Status Gizi Balita")
     st.markdown(f"""
@@ -135,6 +145,7 @@ elif st.session_state.page == "hasil":
     """, unsafe_allow_html=True)
 
     st.markdown(" ")
-    if st.button("Silakan klik untuk memulai prediksi kembali"):
+    if st.button("Klik untuk mulai prediksi kembali"):
+        reset_form()
         st.session_state.page = "form"
         st.experimental_rerun()
